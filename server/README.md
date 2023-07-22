@@ -12,7 +12,7 @@ If you already have a recent forge-enabled server installed you can skip these s
 ```
 mkdir ~/mverse
 cd ~/mverse
-export FORGE_VERSION=1.15.2-31.2.27
+export FORGE_VERSION=1.16.5-36.2.39
 wget http://files.minecraftforge.net/maven/net/minecraftforge/forge/$FORGE_VERSION/forge-$FORGE_VERSION-launcher.jar
 wget http://files.minecraftforge.net/maven/net/minecraftforge/forge/$FORGE_VERSION/forge-$FORGE_VERSION-installer.jar
 java -jar forge-$FORGE_VERSION-installer.jar --installServer
@@ -74,7 +74,7 @@ Your server should always be behind a firewall of some kind, so you'll need to o
 
 - `cd ~/mverse`
 
-- `export FORGE_VERSION=1.15.2-31.2.27`
+- `export FORGE_VERSION=1.16.5-36.2.39`
 
 - `export MVERSE_VERSION=0.2.2`
 
