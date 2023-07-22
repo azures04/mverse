@@ -9,7 +9,7 @@ public class PacketConnectRemote {
 	public int port;
 
 	public static void encode(PacketConnectRemote msg, PacketBuffer buf) {
-		buf.writeString(msg.host);
+		buf.writeUtf(msg.host);
 		buf.writeInt(msg.port);
 	}
 

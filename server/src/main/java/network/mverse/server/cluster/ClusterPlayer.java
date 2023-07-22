@@ -77,7 +77,7 @@ public class ClusterPlayer {
   }
 
   public void loadFromCluster() {
-    UUID playerId = PlayerEntity.getUUID(player.getGameProfile());
+    UUID playerId = player.getUUID();
     byte[] playerBytes = ClusterManager.players.get(playerId.toString());
 
     ClusterPlayer.players.put(player, this);
@@ -101,7 +101,7 @@ public class ClusterPlayer {
         logger("Player from cluster was null, a new player has joined!");
       }
     } catch (Exception e) {
-      LOGGER.error("There was an error syncing the MVerse player from the cluster, please see below for more details. {}", player.getUniqueID());
+      LOGGER.error("There was an error syncing the MVerse player from the cluster, please see below for more details. {}", player.getUUID());
       e.printStackTrace();
 
       // Something went wrong, with writing the player to disk or something
@@ -118,7 +118,7 @@ public class ClusterPlayer {
 
   public void saveToCluster() {
     CompoundNBT playerToSave = player.serializeNBT();
-    UUID playerId = PlayerEntity.getUUID(player.getGameProfile());
+    UUID playerId = player.getUUID();
 
     Callable<Void> saveTask = () -> {
       ByteArrayOutputStream playerBytes = new ByteArrayOutputStream();
@@ -155,12 +155,12 @@ public class ClusterPlayer {
     // Check cluster to see if this exists already, if so we are placing the other side
     if (teleportal == null) {
       // We are creating a new one
-      teleportal = new Teleportal(blockPos.getX(), blockPos.getY(), blockPos.getZ(), hostname, server.getServerPort());
+      teleportal = new Teleportal(blockPos.getX(), blockPos.getY(), blockPos.getZ(), hostname, server.getPort());
     }
     else {
       if (teleportal.hostB.equals("") && teleportal.portB == 0) {
         // We are finishing a one sided existing portal
-        teleportal.complete(blockPos.getX(), blockPos.getY(), blockPos.getZ(), hostname, server.getServerPort());
+        teleportal.complete(blockPos.getX(), blockPos.getY(), blockPos.getZ(), hostname, server.getPort());
       }
       else {
         LOGGER.warn("Trying to complete an already completed portal with ID {}", teleportalId);
@@ -175,12 +175,12 @@ public class ClusterPlayer {
   }
 
   public void teleport(String teleportalId) {
-    UUID playerId = PlayerEntity.getUUID(player.getGameProfile());
+    UUID playerId = player.getUUID();
     Teleportal teleportal = ClusterManager.teleportals.get(teleportalId);
 
     LOGGER.info("Got teleportal from cluster: \n{}", teleportal);
 
-    TeleportSession teleportSession = new TeleportSession(teleportalId, player.rotationYaw, player.rotationPitch);
+    TeleportSession teleportSession = new TeleportSession(teleportalId, player.yRot, player.xRot);
 
     // Create TeleportSession
     ClusterManager.teleportSessions
@@ -288,24 +288,24 @@ public class ClusterPlayer {
   }
 
   private void setOriginalPosition(double x, double y, double z, float yaw, float pitch) {
-    logger("Moving player from {} {} {} {} {}", player.getPosX(), player.getPosY(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
+    logger("Moving player from {} {} {} {} {}", player.getX(), player.getY(), player.getZ(), player.yRot, player.xRot);
     logger("Moving player to {} {} {} {} {}", x, y, z, yaw, pitch);
-    player.rotationYaw = yaw;
-    player.rotationPitch = pitch;
-    player.setPositionAndUpdate(x, y, z);
+    player.yRot = yaw;
+    player.xRot= pitch;
+    player.setPos(x, y, z);
   }
 
   private Hashtable<String, Double> calculateFinalPosition() {
     // Copy their original positions, i.e. where they last were on this server
     // not the coords from the cluster data
-    double finalX = player.getPosX();
-    double finalY = player.getPosY();
-    double finalZ = player.getPosZ();
-    double finalYaw = player.rotationYaw;
-    double finalPitch = player.rotationPitch;
+    double finalX = player.getX();
+    double finalY = player.getY();
+    double finalZ = player.getZ();
+    double finalYaw = player.yRot;
+    double finalPitch = player.xRot;
 
     // Check if the player is teleporting in, and send them to those coords instead saved ones
-    UUID playerId = PlayerEntity.getUUID(player.getGameProfile());
+    UUID playerId = player.getUUID();
     TeleportSession session = ClusterManager.teleportSessions.get(playerId.toString());
 
     if (session != null) {

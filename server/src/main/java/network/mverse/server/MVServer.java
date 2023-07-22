@@ -61,7 +61,7 @@ public class MVServer {
         if (ClusterManager.players == null) {
             LOGGER.error("Player cache was null. Could not connect to cluster? Shutting down!");
             MinecraftServer server = LogicalSidedProvider.INSTANCE.get(LogicalSide.SERVER);
-            server.initiateShutdown(true);
+            server.halt(true);
         } else {
             eventBus.register(new HandleAppEvents());
             MinecraftForge.EVENT_BUS.register(new HandleGeneralEvents());

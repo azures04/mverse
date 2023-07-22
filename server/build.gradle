@@ -90,9 +90,9 @@ minecraft {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
-    compile 'org.infinispan:infinispan-core:11.0.0.Final'
-    compile 'org.infinispan.protostream:protostream-processor:4.3.3.Final'
-    compile 'com.github.javadev:underscore:1.55'
+    implementation 'org.infinispan:infinispan-core:11.0.0.Final'
+    implementation 'org.infinispan.protostream:protostream-processor:4.3.3.Final'
+    implementation 'com.github.javadev:underscore:1.55'
 }
 
 jar {

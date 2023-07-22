@@ -59,9 +59,9 @@ public class HandleGeneralEvents {
     ServerPlayerEntity serverPlayer = (ServerPlayerEntity) event.getEntity();
     World world = event.getWorld();
     BlockPos blockPos = event.getPos();
-    ItemStack heldItemStack = event.getPlayer().getHeldItem(event.getHand());
+    ItemStack heldItemStack = event.getPlayer().getItemInHand(event.getHand());
     Item itemHeld = heldItemStack.getItem();
-    TileEntity tileEntity = world.getTileEntity(blockPos);
+    TileEntity tileEntity = world.getBlockEntity(blockPos);
 
     if (tileEntity == null) {
       return;
