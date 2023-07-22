@@ -27,13 +27,13 @@ public class TeleportalBlock extends SlabBlock {
   public static TeleportalBlock BLOCK;
 
   public TeleportalBlock(EventBus bus) {
-    super(Block.Properties.create(Material.ROCK));
+    super(Block.Properties.of(Material.STONE));
     eventBus = bus;
   }
-
+  
   @Override
-  public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-    TileEntity tileEntity = worldIn.getTileEntity(pos);
+  public void stepOn(World worldIn, BlockPos pos, Entity entityIn) {
+    TileEntity tileEntity = worldIn.getBlockEntity(pos);
     CompoundNBT teleportalNBT = tileEntity.getTileData();
 
     if (!(entityIn instanceof ServerPlayerEntity)) {
@@ -56,7 +56,8 @@ public class TeleportalBlock extends SlabBlock {
   }
 
   @Override
-  public BlockRenderType getRenderType(BlockState blockState) {
+  public BlockRenderType getRenderShape(BlockState blockState) {
     return BlockRenderType.MODEL;
   }
+
 }

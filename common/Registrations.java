@@ -27,7 +27,7 @@ public class Registrations {
 
     @SubscribeEvent
     public static void onClientSetupEvent(FMLClientSetupEvent event) {
-        RenderTypeLookup.setRenderLayer(teleportalBlock, RenderType.getSolid());
+        RenderTypeLookup.setRenderLayer(teleportalBlock, RenderType.solid());
     }
 
     @SubscribeEvent
@@ -53,7 +53,7 @@ public class Registrations {
 
     @SubscribeEvent
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        TileEntityType<?> tileEntity = TileEntityType.Builder.create(TeleportalTileEntity::new, TeleportalBlock.BLOCK)
+        TileEntityType<?> tileEntity = TileEntityType.Builder.of(TeleportalTileEntity::new, TeleportalBlock.BLOCK)
                 .build(DSL.remainderType());
         tileEntity.setRegistryName("mverse", "teleportal");
         event.getRegistry().register(tileEntity);

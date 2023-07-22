@@ -31,7 +31,7 @@ public class PacketConnectRemote {
 
 	public static PacketConnectRemote decode(PacketBuffer buf) {
 		PacketConnectRemote packetConnectRemote = new PacketConnectRemote();
-		packetConnectRemote.host = buf.readString();
+		packetConnectRemote.host = buf.readUtf();
 		packetConnectRemote.port = buf.readInt();
 		return packetConnectRemote;
 	}
@@ -60,17 +60,16 @@ public class PacketConnectRemote {
 
 				if (!serverUp) {
 					StringTextComponent closeMessage = new StringTextComponent("Could not connect to " + host);
-					closeMessage.applyTextStyle(TextFormatting.RED);
-					minecraft.player.sendMessage(closeMessage);
+					closeMessage.withStyle(TextFormatting.RED);
+					minecraft.player.sendMessage(closeMessage, minecraft.player.getUUID());
 					return;
 				}
 
-				minecraft.enqueue(() -> {
+				minecraft.execute(() -> {
 					StringTextComponent closeMessage = new StringTextComponent("Connecting to " + host);
-					closeMessage.applyTextStyle(TextFormatting.YELLOW);
-					closeMessage.applyTextStyle(TextFormatting.BOLD);
-					networkManager.closeChannel(closeMessage);
-
+					closeMessage.withStyle(TextFormatting.YELLOW);
+					closeMessage.withStyle(TextFormatting.BOLD);
+					networkManager.channel().close();
 					try {
 						connect(host, port);
 					} catch (UnknownHostException e) {
@@ -98,19 +97,19 @@ public class PacketConnectRemote {
 
 		private static void connect(String host, int port) throws UnknownHostException {
 			Minecraft minecraft = Minecraft.getInstance();
-			boolean isUsingNativeTransport = minecraft.gameSettings.isUsingNativeTransport();
+			boolean isUsingNativeTransport = minecraft.options.useNativeTransport();
 
 			Screen previousGuiScreen = null;
 			InetAddress inetaddress = InetAddress.getByName(host);
 
-			NetworkManager networkManager = NetworkManager.createNetworkManagerAndConnect(inetaddress, port,
+			NetworkManager networkManager = NetworkManager.connectToServer(inetaddress, port,
 							isUsingNativeTransport);
 			ClientLoginNetHandler handler = new ClientLoginNetHandler(networkManager, minecraft, previousGuiScreen,
 							(a) -> {});
-
-			networkManager.setNetHandler(handler);
-			networkManager.sendPacket(new CHandshakePacket(inetaddress.toString(), port, ProtocolType.LOGIN));
-			networkManager.sendPacket(new CLoginStartPacket(minecraft.getSession().getProfile()));
+			
+			
+			networkManager.send(new CHandshakePacket(inetaddress.toString(), port, ProtocolType.LOGIN));
+			networkManager.send(new CLoginStartPacket(minecraft.getUser().getGameProfile()));
 		}
 	}
 }
